@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda Harian Mendengarkan Al-Qur'an</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        background: #f2f6ff;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: auto;
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h1, h2 {
+        text-align: center;
+        color: #2c3e50;
+    }
+
+    .target-box {
+        margin-bottom: 20px;
+    }
+
+    input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
+
+    .surat-item {
+        display: flex;
+        align-items: center;
+        margin: 6px 0;
+    }
+
+    .surat-item label {
+        margin-left: 8px;
+    }
+
+    .progress {
+        margin-top: 20px;
+        background: #ecf0f1;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    .progress p {
+        margin: 6px 0;
+        font-weight: bold;
+    }
+
+    footer {
+        text-align: center;
+        margin-top: 15px;
+        font-size: 12px;
+        color: #777;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>📖 Agenda Harian Al-Qur'an</h1>
+
+    <div class="target-box">
+        <label><strong>Target Surat Hari Ini:</strong></label>
+        <input type="number" id="target" placeholder="Contoh: 5">
+    </div>
+
+    <h2>Daftar Surat</h2>
+    <div id="suratList"></div>
+
+    <div class="progress">
+        <p>✅ Sudah Didengarkan: <span id="sudah">0</span></p>
+        <p>❌ Belum Didengarkan: <span id="belum">0</span></p>
+    </div>
+
+    <footer>
+        Semoga istiqomah 🤍
+    </footer>
+</div>
+
+<script>
+    const surat = [
+        "Al-Fatihah","Al-Baqarah","Ali Imran","An-Nisa",
+        "Al-Ma'idah","Al-An'am","Al-A'raf","Al-Anfal",
+        "At-Taubah","Yunus","Hud","Yusuf","Ar-Ra'd",
+        "Ibrahim","Al-Hijr","An-Nahl","Al-Isra","Al-Kahfi",
+        "Maryam","Ta-Ha"
+    ];
+
+    const suratList = document.getElementById("suratList");
+    const sudahEl = document.getElementById("sudah");
+    const belumEl = document.getElementById("belum");
+
+    let statusSurat = JSON.parse(localStorage.getItem("statusSurat")) || {};
+
+    function tampilSurat() {
+        suratList.innerHTML = "";
+        surat.forEach((nama, index) => {
+            const div = document.createElement("div");
+            div.className = "surat-item";
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.checked = statusSurat[nama] || false;
+
+            checkbox.addEventListener("change", () => {
+                statusSurat[nama] = checkbox.checked;
+                localStorage.setItem("statusSurat", JSON.stringify(statusSurat));
+                updateProgress();
+            });
+
+            const label = document.createElement("label");
+            label.textContent = nama;
+
+            div.appendChild(checkbox);
+            div.appendChild(label);
+            suratList.appendChild(div);
+        });
+    }
+
+    function updateProgress() {
+        const sudah = Object.values(statusSurat).filter(v => v).length;
+        const belum = surat.length - sudah;
+        sudahEl.textContent = sudah;
+        belumEl.textContent = belum;
+    }
+
+    tampilSurat();
+    updateProgress();
+</script>
+
+</body>
+</html>
